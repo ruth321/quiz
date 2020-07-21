@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strconv"
 )
 
 type questionAnswer struct {
@@ -55,9 +54,13 @@ func main() {
 		fmt.Println("4. Exit")
 		fmt.Println("Choose action")
 		fmt.Print("->")
-		resp = "y"
 		var a int
 		_, _ = fmt.Scan(&a)
+		for a < 1 || a > 4 {
+			fmt.Println("Wrong number")
+			fmt.Print("->")
+			_, _ = fmt.Scan(&a)
+		}
 		switch a {
 		case 1:
 			startQuiz(quiz)
@@ -145,12 +148,4 @@ func delQuestions(quiz []questionAnswer) []questionAnswer {
 		_, _ = fmt.Scan(&resp)
 	}
 	return quiz
-}
-
-func isValidNum(n string, l int) bool {
-	a, err := strconv.Atoi(n)
-	if err != nil || a-1 < 0 || a > l {
-		return false
-	}
-	return true
 }
