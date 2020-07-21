@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strconv"
 )
 
 type questionAnswer struct {
@@ -26,27 +25,15 @@ func main() {
 		fmt.Print("(y/n)->")
 		_, _ = fmt.Scan(&resp)
 		if resp == "y" {
-			_, err = os.Create(fileName)
-			if err != nil {
-				fmt.Println(err)
-			}
-			file, err = ioutil.ReadFile(fileName)
-			if err != nil {
-				fmt.Println(err)
-			}
+			_, _ = os.Create(fileName)
+			file, _ = ioutil.ReadFile(fileName)
 			fmt.Println("File created.")
-			err = json.Unmarshal(file, &quiz)
-			if err != nil {
-				fmt.Println(err)
-			}
+			_ = json.Unmarshal(file, &quiz)
 		} else {
 			return
 		}
 	} else {
-		err = json.Unmarshal(file, &quiz)
-		if err != nil {
-			fmt.Println(err)
-		}
+		_ = json.Unmarshal(file, &quiz)
 	}
 	for k {
 		fmt.Println("1. Start quiz")
@@ -55,9 +42,13 @@ func main() {
 		fmt.Println("4. Exit")
 		fmt.Println("Choose action")
 		fmt.Print("->")
-		resp = "y"
 		var a int
 		_, _ = fmt.Scan(&a)
+		for a < 1 || a > 4 {
+			fmt.Println("Wrong number")
+			fmt.Print("->")
+			_, _ = fmt.Scan(&a)
+		}
 		switch a {
 		case 1:
 			startQuiz(quiz)
@@ -145,12 +136,4 @@ func delQuestions(quiz []questionAnswer) []questionAnswer {
 		_, _ = fmt.Scan(&resp)
 	}
 	return quiz
-}
-
-func isValidNum(n string, l int) bool {
-	a, err := strconv.Atoi(n)
-	if err != nil || a-1 < 0 || a > l {
-		return false
-	}
-	return true
 }
