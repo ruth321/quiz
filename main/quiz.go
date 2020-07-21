@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
+	"time"
 )
 
 type questionAnswer struct {
@@ -13,6 +15,7 @@ type questionAnswer struct {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	var fileName string
 	k := true
 	var resp string
@@ -75,16 +78,25 @@ func startQuiz(quiz []questionAnswer) {
 	for resp == "y" {
 		var answer string
 		var count int
-		for i := 0; i < len(quiz); i++ {
+		var lim int
+		fmt.Printf("Enter number of questions (max %d)\n", len(quiz))
+		fmt.Print("->")
+		_, _ = fmt.Scan(&lim)
+		a := rand.Perm(len(quiz))
+		a = a[:lim]
+		for i := 0; i < len(a); i++ {
 			fmt.Print("Question: ")
-			fmt.Println(quiz[i].Question)
+			fmt.Println(quiz[a[i]].Question)
 			fmt.Print("Answer: ")
 			_, _ = fmt.Scan(&answer)
-			if answer == quiz[i].Answer {
+			if answer == "end" {
+				fmt.Println("end of time")
+			}
+			if answer == quiz[a[i]].Answer {
 				count++
 			}
 		}
-		fmt.Printf("Right answers: %d out of %d\n", count, len(quiz))
+		fmt.Printf("Right answers: %d out of %d\n", count, len(a))
 		fmt.Println("Restart?")
 		fmt.Print("(y/n)->")
 		_, _ = fmt.Scan(&resp)
